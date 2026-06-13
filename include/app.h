@@ -2,6 +2,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include <stdio.h>
 #include <raylib.h>
 #include "canvas.h"
 
@@ -15,6 +16,7 @@
 
 typedef struct {
     int is_mouse_down;
+    float input[GRID_SIZE * GRID_SIZE];
     Canvas canvas;
 } App;
 
@@ -24,5 +26,7 @@ void run_app(App *app);
 void update_app(App *app);
 void draw_app(App *app);
 void destroy_app();
+
+void output_input(const App *app);
 
 #endif /* APP_H */

@@ -45,3 +45,10 @@ void render_canvas(Canvas *canvas)
         }
     }
 }
+
+void canvas_to_input(const Canvas *canvas, float *input)
+{
+    for (int i = 0; i < GRID_SIZE; i++)
+        for (int j = 0; j < GRID_SIZE; j++)
+            input[i * GRID_SIZE + j] = canvas->pixels[i][j];
+}
