@@ -1,0 +1,26 @@
+#pragma once
+#ifndef APP_H
+#define APP_H
+
+#include <raylib.h>
+
+#define APP_NAME "Digit AI"
+#define APP_VERSION "0.1.0"
+
+#define GRID_SIZE 28
+#define CELL_SIZE 25
+
+#define WINDOW_WIDTH (GRID_SIZE * CELL_SIZE)
+#define WINDOW_HEIGHT (GRID_SIZE * CELL_SIZE)
+
+typedef struct {
+    int is_mouse_down;
+} App;
+
+void init_app(App *app);
+void run_app(App *app);
+void update_app(App *app);
+void draw_app(App *app);
+void destroy_app();
+
+#endif /* APP_H */
