@@ -1,6 +1,6 @@
 # Digit AI
 
-A minimal Raylib-based C application demonstrating a simple interactive window.
+a simple neural network for identification digit from image
 
 ## Build
 
