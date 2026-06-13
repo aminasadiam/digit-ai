@@ -14,13 +14,24 @@
 #define WINDOW_HEIGHT (GRID_SIZE * CELL_SIZE)
 
 typedef struct {
+    float pixels[GRID_SIZE][GRID_SIZE];
+} Canvas;
+
+typedef struct {
     int is_mouse_down;
+    Canvas canvas;
 } App;
 
+// App function declarations
 void init_app(App *app);
 void run_app(App *app);
 void update_app(App *app);
 void draw_app(App *app);
 void destroy_app();
+
+// Canvas function declarations
+void draw_canvas(Canvas *canvas, int mouse_x, int mouse_y);
+void clear_canvas(Canvas *canvas);
+void render_canvas(Canvas *canvas);
 
 #endif /* APP_H */
