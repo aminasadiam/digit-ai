@@ -14,9 +14,21 @@ void draw_canvas(Canvas *canvas, int mouse_x, int mouse_y)
     int x = mouse_x / canvas->cell_size;
     int y = mouse_y / canvas->cell_size;
 
-    if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE)
+    for (int dy = -1; dy <= 1; dy++)
     {
-        canvas->pixels[y][x] = 1.0f;
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            int nx = x + dx;
+            int ny = y + dy;
+
+            if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE)
+            {
+                canvas->pixels[ny][nx] += 0.4f;
+
+                if (canvas->pixels[ny][nx] > 1.0f)
+                    canvas->pixels[ny][nx] = 1.0f;
+            }
+        }
     }
 }
 
@@ -33,7 +45,14 @@ void render_canvas(Canvas *canvas)
     {
         for (int x = 0; x < GRID_SIZE; x++)
         {
-            Color col = canvas->pixels[y][x] > 0 ? WHITE : BLACK;
+            float v = canvas->pixels[y][x];
+
+            Color col = (Color){
+                255 - (int)(v * 255),
+                255 - (int)(v * 255),
+                255 - (int)(v * 255),
+                255
+            };
 
             DrawRectangle(
                 x * canvas->cell_size,

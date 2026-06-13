@@ -41,7 +41,6 @@ void update_app(App *app)
 void draw_app(App *app)
 {
     BeginDrawing();
-    ClearBackground(BLACK);
 
     render_canvas(&app->canvas);
     DrawText("Draw a digit", 10, 10, 20, DARKGRAY);
