@@ -1,4 +1,5 @@
 #include "app.h"
+#include <stdio.h>
 
 void init_app(App *app)
 {
@@ -24,7 +25,7 @@ void update_app(App *app)
         Vector2 m = GetMousePosition();
         draw_canvas(&app->canvas, (int)m.x, (int)m.y);
     }
-    
+
     if (IsKeyPressed(KEY_C))
     {
         clear_canvas(&app->canvas);
