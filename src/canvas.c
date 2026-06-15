@@ -48,9 +48,9 @@ void render_canvas(Canvas *canvas)
             float v = canvas->pixels[y][x];
 
             Color col = (Color){
-                255 - (int)(v * 255),
-                255 - (int)(v * 255),
-                255 - (int)(v * 255),
+                (unsigned char)(v * 255),
+                (unsigned char)(v * 255),
+                (unsigned char)(v * 255),
                 255
             };
 

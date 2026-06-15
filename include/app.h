@@ -4,6 +4,7 @@
 
 #include <raylib.h>
 #include "canvas.h"
+#include "nn.h"
 
 #define APP_NAME "Digit AI"
 
@@ -14,11 +15,18 @@
 #define WINDOW_HEIGHT (GRID_SIZE * CELL_SIZE)
 
 typedef struct {
-    int is_mouse_down;
-    float input[GRID_SIZE * GRID_SIZE];
     Canvas canvas;
-} App;
+    NeuralNetwork nn;
 
+    float input[GRID_SIZE * GRID_SIZE];
+    float hidden[64];
+    float output[10];
+
+    int predicted;
+
+    int dirty;
+    int frame;
+} App;
 
 void init_app(App *app);
 void run_app(App *app);
@@ -26,6 +34,7 @@ void update_app(App *app);
 void draw_app(App *app);
 void destroy_app();
 
-void output_input(const App *app);
+void draw_output(const App *app);
+void draw_input_debug(const App *app);
 
-#endif /* APP_H */
+#endif

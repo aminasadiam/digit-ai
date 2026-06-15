@@ -3,7 +3,7 @@ APP_VERSION=0.1.0
 
 CC=gcc
 CFLAGS=-Iinclude -Wall -Wextra -Werror
-LDFLAGS=-lraylib
+LDFLAGS=-lraylib -lm
 
 SRC_DIR=src
 APP_DIR=$(SRC_DIR)/app

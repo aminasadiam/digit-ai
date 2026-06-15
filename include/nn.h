@@ -1,20 +1,39 @@
 #pragma once
-#ifndef NN_H
-#define NN_H
 
-#include <stdlib.h>
+#define INPUT_SIZE 784
+#define HIDDEN_SIZE 64
+#define OUTPUT_SIZE 10
+#define LR 0.01f
 
 typedef struct {
-    float w1[784][64];
-    float b1[64];
+    float w1[INPUT_SIZE][HIDDEN_SIZE];
+    float b1[HIDDEN_SIZE];
 
-    float w2[64][10];
-    float b2[10];
+    float w2[HIDDEN_SIZE][OUTPUT_SIZE];
+    float b2[OUTPUT_SIZE];
 } NeuralNetwork;
 
 float randf();
-void nn_init(NeuralNetwork *nn);
-float relu(float x);
-int nn_forward(NeuralNetwork *nn, float input[784]);
 
-#endif
+void nn_init(NeuralNetwork *nn);
+
+void nn_forward(
+    NeuralNetwork *nn,
+    float input[INPUT_SIZE],
+    float hidden[HIDDEN_SIZE],
+    float output[OUTPUT_SIZE]
+);
+
+void nn_backprop(
+    NeuralNetwork *nn,
+    float input[INPUT_SIZE],
+    float hidden[HIDDEN_SIZE],
+    float output[OUTPUT_SIZE],
+    int label
+);
+
+int nn_predict(float output[OUTPUT_SIZE]);
+
+void softmax(float input[INPUT_SIZE], float output[OUTPUT_SIZE], int size);
+
+float cross_entropy_loss(float output[10], int label);
