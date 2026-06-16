@@ -1,5 +1,7 @@
 #include "app.h"
+#include "mnist.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void init_app(App *app)
 {
@@ -9,10 +11,44 @@ void init_app(App *app)
     init_canvas(&app->canvas, WINDOW_WIDTH);
     nn_init(&app->nn);
 
-    app->predicted = -1;
+    app->train_set =
+        malloc(sizeof(MnistSample) * MAX_TRAIN_SAMPLES);
 
+    if (!app->train_set)
+    {
+        printf("Failed to allocate memory\n");
+        exit(1);
+    }
+
+    app->train_count =
+        load_mnist_csv("./assets/mnist_train.csv",
+                        app->train_set,
+                        MAX_TRAIN_SAMPLES);
+
+    printf("Loaded %d samples\n", app->train_count);
+
+    app->test_set =
+        malloc(sizeof(MnistSample) * MAX_TEST_SAMPLES);
+
+    if (!app->test_set)
+    {
+        printf("Failed to allocate memory\n");
+        exit(1);
+    }
+
+    app->test_count =
+        load_mnist_csv("./assets/mnist_test.csv",
+                        app->test_set,
+                        MAX_TEST_SAMPLES);
+
+    printf("Loaded %d samples\n", app->test_count);
+
+    app->predicted = -1;
     app->dirty = 1;
     app->frame = 0;
+
+    app->training = 0;
+    app->epoch = 0;
 }
 
 void run_app(App *app)
@@ -26,6 +62,26 @@ void run_app(App *app)
 
 void update_app(App *app)
 {
+    if (IsKeyPressed(KEY_T))
+    {
+        app->training = 1;
+        printf("🚀 Training started...\n");
+    }
+
+    if (app->training)
+    {
+        train_one_epoch(app);
+        evaluate(app);
+
+        app->epoch++;
+
+        if (app->epoch >= 20)
+        {
+            printf("⛔ Max epochs reached\n");
+            app->training = 0;
+        }
+    }
+
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
         Vector2 m = GetMousePosition();
@@ -45,7 +101,12 @@ void update_app(App *app)
     if (app->dirty && app->frame % 2 == 0)
     {
         canvas_to_input(&app->canvas, app->input);
-        nn_forward(&app->nn, app->input, app->hidden, app->output);
+
+        nn_forward(&app->nn,
+                   app->input,
+                   app->hidden,
+                   app->output);
+
         app->predicted = nn_predict(app->output);
 
         app->dirty = 0;
@@ -64,6 +125,11 @@ void draw_app(App *app)
     draw_input_debug(app);
     draw_output(app);
 
+    if (app->training)
+    {
+        DrawText("TRAINING...", 10, 70, 20, RED);
+    }
+
     if (app->predicted >= 0)
     {
         char text[64];
@@ -74,8 +140,10 @@ void draw_app(App *app)
     EndDrawing();
 }
 
-void destroy_app()
+void destroy_app(App *app)
 {
+    free(app->train_set);
+    free(app->test_set);
     CloseWindow();
 }
 
@@ -113,4 +181,75 @@ void draw_input_debug(const App *app)
             );
         }
     }
+}
+
+void train_one_epoch(App *app)
+{
+    float total_loss = 0.0f;
+    int correct = 0;
+
+    for (int i = 0; i < app->train_count; i++)
+    {
+        MnistSample *sample = &app->train_set[i];
+
+        nn_forward(
+            &app->nn,
+            sample->image,
+            app->hidden,
+            app->output
+        );
+
+        total_loss += cross_entropy_loss(
+            app->output,
+            sample->label
+        );
+
+        int predicted = nn_predict(app->output);
+
+        if (predicted == sample->label)
+            correct++;
+
+        nn_backprop(
+            &app->nn,
+            sample->image,
+            app->hidden,
+            app->output,
+            sample->label
+        );
+    }
+
+    float accuracy =
+        (float)correct * 100.0f /
+        (float)app->train_count;
+
+    printf(
+        "loss = %.4f | accuracy = %.2f%%\n",
+        total_loss / app->train_count,
+        accuracy
+    );
+}
+
+void evaluate(App *app)
+{
+    int correct = 0;
+
+    for (int i = 0; i < app->test_count; i++)
+    {
+        MnistSample *s = &app->test_set[i];
+
+        nn_forward(
+            &app->nn,
+            s->image,
+            app->hidden,
+            app->output
+        );
+
+        if (nn_predict(app->output) == s->label)
+            correct++;
+    }
+
+    printf(
+        "TEST accuracy = %.2f%%\n",
+        100.0f * correct / app->test_count
+    );
 }

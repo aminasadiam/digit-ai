@@ -5,6 +5,6 @@ int main()
     App app;
     init_app(&app);
     run_app(&app);
-    destroy_app();
+    destroy_app(&app);
     return 0;
 }

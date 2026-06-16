@@ -1,9 +1,11 @@
 #pragma once
 
+#include <math.h>
+
 #define INPUT_SIZE 784
 #define HIDDEN_SIZE 64
 #define OUTPUT_SIZE 10
-#define LR 0.01f
+#define LR 0.001f
 
 typedef struct {
     float w1[INPUT_SIZE][HIDDEN_SIZE];
@@ -34,6 +36,6 @@ void nn_backprop(
 
 int nn_predict(float output[OUTPUT_SIZE]);
 
-void softmax(float input[INPUT_SIZE], float output[OUTPUT_SIZE], int size);
+void softmax(float *input, float *output, int size);
 
-float cross_entropy_loss(float output[10], int label);
+float cross_entropy_loss(float output[OUTPUT_SIZE], int label);
