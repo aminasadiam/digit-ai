@@ -1,6 +1,4 @@
 #pragma once
-#ifndef CANVAS_H
-#define CANVAS_H
 
 #include <raylib.h>
 
@@ -17,5 +15,3 @@ void clear_canvas(Canvas *canvas);
 void render_canvas(Canvas *canvas);
 
 void canvas_to_input(const Canvas *canvas, float *input);
-
-#endif /* CANVAS_H */

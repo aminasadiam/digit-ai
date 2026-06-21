@@ -21,7 +21,7 @@ void init_app(App *app)
     }
 
     app->train_count =
-        load_mnist_csv("./assets/mnist_train.csv",
+        load_mnist_csv("assets/mnist_train.csv",
                         app->train_set,
                         MAX_TRAIN_SAMPLES);
 
@@ -37,7 +37,7 @@ void init_app(App *app)
     }
 
     app->test_count =
-        load_mnist_csv("./assets/mnist_test.csv",
+        load_mnist_csv("assets/mnist_test.csv",
                         app->test_set,
                         MAX_TEST_SAMPLES);
 
@@ -65,7 +65,7 @@ void update_app(App *app)
     if (IsKeyPressed(KEY_T))
     {
         app->training = 1;
-        printf("🚀 Training started...\n");
+        printf("Training started...\n");
     }
 
     if (app->training)
@@ -77,7 +77,7 @@ void update_app(App *app)
 
         if (app->epoch >= 20)
         {
-            printf("⛔ Max epochs reached\n");
+            printf("Max epochs reached\n");
             app->training = 0;
         }
     }
